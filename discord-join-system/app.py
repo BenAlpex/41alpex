@@ -320,3 +320,6 @@ if __name__ == '__main__':
     print(f"🔑 Admin: http://localhost:{PORT}/admin")
     print("=" * 50)
     app.run(debug=False, port=PORT)
+
+# Vercel için
+app = app  # Bu satır Vercel'in app'i bulmasını sağlar
