@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İşlem Başladı</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0a0a1a;
+            padding: 20px;
+        }
+        .container {
+            background: #2C2F33;
+            padding: 50px 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            color: #fff;
+        }
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #1a1a2e;
+            border-top: 4px solid #57F287;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        h1 { font-size: 24px; margin-bottom: 8px; }
+        p { color: #99AAB5; font-size: 15px; margin-bottom: 20px; }
+        .info {
+            background: #1a1a2e;
+            padding: 16px;
+            border-radius: 12px;
+        }
+        .info .label { color: #99AAB5; font-size: 13px; }
+        .info .value { font-size: 18px; font-weight: 600; margin-top: 3px; }
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 14px 30px;
+            background: #5865F2;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        .btn:hover { background: #4752C4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <h1>🔄 İşlem Başladı!</h1>
+        <p><strong>{{ total_users }}</strong> üye <strong>{{ guild_name }}</strong> sunucusuna ekleniyor...</p>
+        <div class="info">
+            <div class="label">📡 Sunucu</div>
+            <div class="value">{{ guild_name }}</div>
+            <div class="label" style="margin-top:10px;">👥 Eklenecek Üye</div>
+            <div class="value" style="color:#57F287;">{{ total_users }}</div>
+        </div>
+        <a href="/admin" class="btn">🔙 Admin'e Dön</a>
+    </div>
+</body>
+</html>

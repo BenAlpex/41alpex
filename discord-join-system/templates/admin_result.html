@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toplu Ekleme Sonucu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a1a;
+            padding: 30px;
+            color: #ffffff;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(88,101,242,0.08) 0%, transparent 60%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        .container { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+        .header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
+        .header-icon {
+            width: 52px; height: 52px;
+            background: linear-gradient(135deg, #5865F2, #4752C4);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            box-shadow: 0 8px 32px rgba(88,101,242,0.3);
+        }
+        .header h1 { font-size: 28px; font-weight: 700; }
+        .header .sub { color: #99AAB5; font-size: 14px; font-weight: 400; display: block; }
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .summary-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 20px 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .summary-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255,255,255,0.12);
+        }
+        .summary-card .num { font-size: 34px; font-weight: 800; letter-spacing: -0.5px; }
+        .summary-card .label { color: #99AAB5; font-size: 14px; margin-top: 4px; }
+        .summary-card.blue .num { color: #5865F2; }
+        .summary-card.green .num { color: #57F287; }
+        .summary-card.red .num { color: #ED4245; }
+        .result-container {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .result-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .result-header h3 { font-size: 16px; font-weight: 600; }
+        .result-header .count {
+            font-size: 13px;
+            color: #99AAB5;
+            background: rgba(255,255,255,0.05);
+            padding: 4px 14px;
+            border-radius: 20px;
+        }
+        .result-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 8px;
+        }
+        .result-list::-webkit-scrollbar { width: 6px; }
+        .result-list::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 10px; }
+        .result-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        .result-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: monospace;
+            transition: all 0.2s ease;
+        }
+        .result-item:hover { background: rgba(255,255,255,0.03); }
+        .result-item .r-icon { font-size: 18px; }
+        .result-item.success { color: #57F287; }
+        .result-item.error { color: #ED4245; }
+        .result-item.info { color: #FEE75C; }
+        .actions { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .btn-primary { background: #5865F2; color: #ffffff; box-shadow: 0 4px 24px rgba(88,101,242,0.25); }
+        .btn-primary:hover { background: #4752C4; transform: translateY(-3px); box-shadow: 0 8px 32px rgba(88,101,242,0.35); }
+        .btn-success { background: #57F287; color: #0a0a1a; box-shadow: 0 4px 24px rgba(87,242,135,0.2); }
+        .btn-success:hover { background: #3BA55D; transform: translateY(-3px); box-shadow: 0 8px 32px rgba(87,242,135,0.3); }
+        .btn:active { transform: scale(0.97); }
+        @media (max-width: 600px) {
+            .summary { grid-template-columns: 1fr 1fr; }
+            .actions { flex-direction: column; }
+            .btn { justify-content: center; }
+        }
+        @media (max-width: 400px) {
+            .summary { grid-template-columns: 1fr; }
+            .header { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">📊</div>
+            <div>
+                <h1>Toplu Ekleme Sonucu</h1>
+                <span class="sub">İşlem tamamlandı! Aşağıda detayları görebilirsin</span>
+            </div>
+        </div>
+        <div class="summary">
+            <div class="summary-card blue">
+                <div class="num">{{ toplam }}</div>
+                <div class="label">📋 Toplam İşlem</div>
+            </div>
+            <div class="summary-card green">
+                <div class="num">{{ basarili }}</div>
+                <div class="label">✅ Başarılı</div>
+            </div>
+            <div class="summary-card red">
+                <div class="num">{{ basarisiz }}</div>
+                <div class="label">❌ Başarısız</div>
+            </div>
+        </div>
+        <div class="result-container">
+            <div class="result-header">
+                <h3>📋 Detaylı Sonuçlar</h3>
+                <span class="count">{{ sonuclar|length }} satır</span>
+            </div>
+            <div class="result-list">
+                {% for sonuc in sonuclar %}
+                    <div class="result-item 
+                        {% if '✅' in sonuc %}success
+                        {% elif '❌' in sonuc %}error
+                        {% else %}info{% endif %}">
+                        <span class="r-icon">
+                            {% if '✅' in sonuc %}✅
+                            {% elif '❌' in sonuc %}❌
+                            {% else %}ℹ️{% endif %}
+                        </span>
+                        {{ sonuc }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="actions">
+            <a href="/admin" class="btn btn-primary">🔙 Admin Paneline Dön</a>
+            <a href="/" class="btn btn-success">🏠 Ana Sayfa</a>
+        </div>
+    </div>
+</body>
+</html>
